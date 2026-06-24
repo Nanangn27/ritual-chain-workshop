@@ -336,21 +336,21 @@ contract AIJudge is PrecompileConsumer {
             );
 
         (
-            bool hasError,
-            bytes memory completionData,
-            ,
-            string memory errorMessage,
-
-        ) = abi.decode(
-                output,
-                (
-                    bool,
-                    bytes,
-                    bytes,
-                    string,
-                    ConvoHistory
-                )
-            );
+    bool hasError,
+    bytes memory completionData,
+    ,
+    string memory errorMessage,
+    ConvoHistory memory convoHistory
+) = abi.decode(
+    output,
+    (
+        bool,
+        bytes,
+        bytes,
+        string,
+        ConvoHistory
+    )
+);
 
         require(
             !hasError,
