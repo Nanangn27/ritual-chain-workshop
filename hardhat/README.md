@@ -129,3 +129,77 @@ This approach improves privacy while preserving verifiability.
 Reflection Question
 
 In a bounty system, information such as rewards, deadlines, rules, and final results should remain public so participants can trust the process. Individual submissions should stay hidden during the submission phase to prevent copying and unfair advantages. Commitment hashes can remain public because they do not reveal the underlying answer. AI should evaluate submissions according to the rubric and provide rankings or recommendations. Humans should remain responsible for defining evaluation criteria, reviewing AI output, and making the final payout decision. This reduces the risk of incorrect or biased AI judgments. Combining hidden submissions, AI-assisted evaluation, and human oversight creates a fair and trustworthy bounty system.
+
+Test Plan
+
+Valid Cases
+
+Test 1 - Valid Commitment
+
+- Create bounty
+- Submit commitment before submission deadline
+- Expected Result: transaction succeeds
+
+Test 2 - Valid Reveal
+
+- Submit commitment
+- Wait until reveal phase
+- Reveal correct answer and salt
+- Expected Result: reveal succeeds
+
+Test 3 - Valid Judging
+
+- At least one submission successfully revealed
+- Wait until reveal deadline
+- Call judgeAll()
+- Expected Result: AI review stored successfully
+
+Test 4 - Valid Winner Finalization
+
+- judgeAll() completed
+- Owner calls finalizeWinner()
+- Expected Result: winner receives reward
+
+---
+
+Invalid Cases
+
+Test 5 - Late Commitment
+
+- Submit commitment after submission deadline
+- Expected Result: revert with "submission closed"
+
+Test 6 - Early Reveal
+
+- Reveal before submission phase ends
+- Expected Result: revert with "reveal not started"
+
+Test 7 - Late Reveal
+
+- Reveal after reveal deadline
+- Expected Result: revert with "reveal closed"
+
+Test 8 - Invalid Salt
+
+- Reveal using incorrect salt
+- Expected Result: revert with "commitment mismatch"
+
+Test 9 - Invalid Answer
+
+- Reveal using different answer than committed
+- Expected Result: revert with "commitment mismatch"
+
+Test 10 - Double Commitment
+
+- Same address submits two commitments
+- Expected Result: revert with "already committed"
+
+Test 11 - Judge Too Early
+
+- Call judgeAll() before reveal deadline
+- Expected Result: revert with "reveal phase active"
+
+Test 12 - Finalize Before Judging
+
+- Call finalizeWinner() before judgeAll()
+- Expected Result: revert with "not judged"
